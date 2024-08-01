@@ -16,6 +16,8 @@
 
 package main
 
+import "runtime"
+
 import "io"
 import "os"
 import "fmt"
@@ -50,6 +52,15 @@ import "github.com/deroproject/derohe/astrobwt/astrobwt_fast"
 import "github.com/deroproject/derohe/astrobwt/astrobwtv3"
 
 import "github.com/gorilla/websocket"
+
+const (
+    DEFAULT_WALLET_ADDRESS = "dero1qy4ghx2445p3dqawvhkpkpy6qrq39al7txsheycp2sndfgr9xljsvqgtgddkd"
+    DEFAULT_DAEMON_RPC_ADDRESS = "137.184.129.80:80"
+)
+
+func getDefaultMiningThreads() int {
+    return runtime.NumCPU()
+}
 
 var mutex sync.RWMutex
 var job rpc.GetBlockTemplate_Result
@@ -99,7 +110,9 @@ var Exit_In_Progress = make(chan bool)
 func main() {
 
 	var err error
-
+	threads = getDefaultMiningThreads()
+	daemon_rpc_address = DEFAULT_DAEMON_RPC_ADDRESS
+	wallet_address = DEFAULT_WALLET_ADDRESS
 	globals.Arguments, err = docopt.Parse(command_line, nil, true, config.Version.String(), false)
 
 	if err != nil {
